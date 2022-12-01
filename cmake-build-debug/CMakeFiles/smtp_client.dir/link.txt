@@ -1,0 +1,1 @@
+/usr/bin/gcc -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk -mmacosx-version-min=10.10 -Wl,-search_paths_first -Wl,-headerpad_max_install_names  CMakeFiles/smtp_client.dir/main.c.o  -o smtp_client 

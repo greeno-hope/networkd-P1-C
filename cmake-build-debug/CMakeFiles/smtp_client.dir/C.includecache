@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/markgreenwood/CLionProjects/smtp_client/main.c
+arpa/inet.h
+-
+stdio.h
+-
+string.h
+-
+sys/socket.h
+-
+unistd.h
+-
+netdb.h
+-
+stdlib.h
+-
+

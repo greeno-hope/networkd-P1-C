@@ -1,0 +1,3 @@
+/Users/markgreenwood/CLionProjects/smtp_client/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/markgreenwood/CLionProjects/smtp_client/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/markgreenwood/CLionProjects/smtp_client/cmake-build-debug/CMakeFiles/smtp_client.dir
