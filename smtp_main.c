@@ -8,6 +8,8 @@
  *      EMAIL FROM
  *      RCPT TO
  *      BEGIN DATA
+ *      Sending the data line by line (including a SUBJECT header)
+ *      QUIT
  *
  */
 
@@ -77,10 +79,8 @@ int main(int argv, char **args) {
         exit(1);
     }
     // Send EHLO
-    memset(reply_buffer, 1024, 0x00);
     bytes_read = send_ehlo(reply_buffer, 1024);
     // Send STARTTLS
-    memset(reply_buffer, 1024, 0x00);
     bytes_read = send_start_tls(reply_buffer, 1024);
 
 
@@ -105,6 +105,7 @@ int main(int argv, char **args) {
  * @return
  */
 int send_ehlo(char *buffer, int buf_size) {
+    memset(buffer, 1024, 0x00);
     int bytes_sent = send_line("ehlo smtp-mail.outlook.com\r\n", strlen("ehlo smtp-mail.outlook.com\r\n"));
     int bytes_read = read_reply(buffer, 1024);
     if(bytes_read < 200) {
@@ -122,13 +123,16 @@ int send_ehlo(char *buffer, int buf_size) {
  * @return
  */
 int send_start_tls(char *buffer, int buf_size) {
+    memset(buffer, 1024, 0x00);
     int bytes_sent = send_line("STARTTLS\r\n", 10);
     int bytes_read = read_reply(buffer, 1024);
     // Check that the return buffer has the success code '220'
     if(strncmp("220", buffer, 3) != 0) {
         printf("STARTTLS failed");
         exit(1);
-    }
+    } else {
+        init_ssl();
+    };
     // Switch to TLS mode
     return bytes_read;
 }
