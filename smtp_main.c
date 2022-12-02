@@ -1,4 +1,17 @@
+/*
+ * smtp_main.c
+ *
+ * Starter code for Level I Networks Portfolio 1
+ * Simple SMTP client for connecting to the outlook smtp mail server
+ * The connection , TLS switch and authentication logic is all written
+ * students only need to implement the SMTP command logic for:
+ *      EMAIL FROM
+ *      RCPT TO
+ *      BEGIN DATA
+ *
+ */
 
+/* Include files needed for standard networking */
 #include <arpa/inet.h>
 #include <stdio.h>
 #include <string.h>
@@ -6,14 +19,26 @@
 #include <unistd.h>
 #include<netdb.h>
 #include <stdlib.h>
+/* Include files needed for SSL/TLS */
+#include <openssl/bio.h>
+#include <openssl/ssl.h>
+#include <openssl/err.h>
+#include <openssl/pem.h>
+#include <openssl/x509.h>
+#include <openssl/x509_vfy.h>
 
+/*
+ * Port 587 is the port outlook.com uses for a vanilla socket -> TLS connection
+ * i.e. one that uses the STARTTLS command
+ */
 #define PORT 587
 
-/* Utility functionsfor the client */
+/* Utility functions for the client */
 int hostname_to_ip(char * hostname , char* ip);
 int send_line(char *msg, int len);
 int read_reply(char *buffer, int capacity);
 int get_code(char *msg, int len);
+int init_ssl();
 
 /* These functions implement the SMTP protocol commands and responses */
 int start_tcp_session();
@@ -24,18 +49,18 @@ int send_auth_request(char *buffer, int buf_size);
 int send_username(char *buffer, int buf_size);
 int send_password(char *buffer, int buf_size);
 
-/* TODO You will have to implement the functions below this point */
+/********************* TODO You will have to implement the functions in this block *********************/
 int send_email_from(char *msg, int len);
 int send_rcpt_to(char *msg, int len);
 int send_begin_data();
 int send_message();
 int send_quit();
-/* TODO You will have to implement the functions above this point */
+/********************* TODO You will have to implement the functions in this block *********************/
 
 /* Global variables */
 char *server_name = "smtp-mail.outlook.com";
 int  socket_handle = 0;
-int  client_fd = 0;
+int client_fd;
 struct sockaddr_in serv_addr;
 
 
@@ -99,8 +124,12 @@ int send_ehlo(char *buffer, int buf_size) {
 int send_start_tls(char *buffer, int buf_size) {
     int bytes_sent = send_line("STARTTLS\r\n", 10);
     int bytes_read = read_reply(buffer, 1024);
-
-
+    // Check that the return buffer has the success code '220'
+    if(strncmp("220", buffer, 3) != 0) {
+        printf("STARTTLS failed");
+        exit(1);
+    }
+    // Switch to TLS mode
     return bytes_read;
 }
 

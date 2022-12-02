@@ -3,4 +3,4 @@ project(smtp_client C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(smtp_client main.c)
+add_executable(smtp_client smtp_main.c)
